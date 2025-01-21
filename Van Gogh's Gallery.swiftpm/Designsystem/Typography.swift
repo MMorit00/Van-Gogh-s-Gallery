@@ -136,3 +136,13 @@ extension View {
     }
 }
 
+struct FontWithTracking: ViewModifier {
+    let font: Font
+    let tracking: CGFloat
+    
+    func body(content: Content) -> some View {
+        content
+            .font(font)
+            .tracking(tracking)
+    }
+}
