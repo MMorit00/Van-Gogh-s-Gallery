@@ -1,0 +1,12 @@
+.DS_Store
+xcuserdata/
+.build/
+.specstory/
+
+# 忽略所有 .md 文件
+*.md
+
+# 但不忽略这些特定的文档
+!README.md
+!CONTRIBUTING.md
+!LICENSE.md 
