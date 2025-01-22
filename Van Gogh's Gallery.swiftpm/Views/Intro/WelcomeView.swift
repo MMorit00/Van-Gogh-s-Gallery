@@ -7,7 +7,7 @@ private enum Constants {
     static let textColor = Color(hex: "#FAF5ED")
     static let goldColor = Color(hex: "#F7C45E")
     
-    static let selfPortraitImage = "self_portrait"
+    static let selfPortraitImage = "Van"
     static let MuseumImage = "Museum photo"
 }
 
@@ -46,7 +46,7 @@ struct WelcomeView: View {
                 height: 352
             )
             .padding(.leading,112)
-           .padding(.bottom, -8)
+        
         
            
             
