@@ -34,9 +34,15 @@ let package = Package(
             ]
         )
     ],
+    dependencies: [
+        .package(url: "https://github.com/Boris-Em/ColorKit.git", .branch("master"))
+    ],
     targets: [
         .executableTarget(
             name: "AppModule",
+            dependencies: [
+                .product(name: "ColorKit", package: "colorkit")
+            ],
             path: "."
         )
     ]

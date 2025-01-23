@@ -15,7 +15,7 @@ struct ColorBlock: View {
                 .overlay(
                     Rectangle()
                         .inset(by: 1.5)
-                        .stroke(.white, lineWidth: 1.5)
+                        .stroke(.white, lineWidth: 2.5)
                 )
             
             Text(title)

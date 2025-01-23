@@ -4,12 +4,11 @@ struct ProgressBar: View {
     let progress: Double
     var width: CGFloat? = nil // 可选的宽度参数
     var height: CGFloat? = nil // 可选的高度参数
+    @EnvironmentObject var appState: AppState
 
     // 将常量抽取到 ProgressBarStyle 中便于统一管理
     private enum Style {
         static let defaultHeight: CGFloat = 15.5
-        static let backgroundColor = Color(red: 0.90, green: 0.92, blue: 0.88) // 浅色背景
-        static let progressColor = Color(red: 0.47, green: 0.58, blue: 0.20) // 深绿色进度
         static let borderWidth: CGFloat = 1.25
         static let shadowRadius: CGFloat = 2
         static let shadowY: CGFloat = 2
@@ -19,21 +18,21 @@ struct ProgressBar: View {
     // 抽取子视图使主视图更清晰
     private var backgroundBar: some View {
         Rectangle()
-            .fill(Style.backgroundColor)
+            .fill(appState.currentColorScheme.upperBackground)
             .overlay(
                 Rectangle()
                     .inset(by: -Style.borderWidth)
-                    .stroke(Style.backgroundColor, lineWidth: Style.borderWidth)
+                    .stroke(appState.currentColorScheme.upperBackground, lineWidth: Style.borderWidth)
             )
     }
 
     private var progressBar: some View {
         Rectangle()
-            .fill(Style.progressColor)
+            .fill(appState.currentColorScheme.middleColor)
             .overlay(
                 Rectangle()
                     .inset(by: -Style.borderWidth)
-                    .stroke(Style.backgroundColor, lineWidth: Style.borderWidth)
+                    .stroke(appState.currentColorScheme.upperBackground, lineWidth: Style.borderWidth)
             )
     }
 

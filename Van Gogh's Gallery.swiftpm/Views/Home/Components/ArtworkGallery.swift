@@ -84,9 +84,8 @@ struct ArtworkGallery: View {
 }
 
 #Preview {
-
     ArtworkGallery(
-        artworks: [Artwork.thePotatoEaters],
-        selectedArtwork: .constant(Artwork.thePotatoEaters)
+        artworks: [thePotatoEaters],
+        selectedArtwork: .constant(thePotatoEaters)
     )
 }
