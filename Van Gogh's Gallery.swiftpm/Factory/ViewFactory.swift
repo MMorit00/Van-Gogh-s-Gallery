@@ -59,7 +59,7 @@ static func makeView(for route: Route) -> some View {
     }
     
     private static func makeColorChallengeView(artwork: Artwork) -> some View {
-        ColorChallengeView(artwork: artwork)
+      ColorChallengeView(artWork: artwork)
             .transition(.opacity.combined(with: .slide))
             .modifier(PageTransitionModifier())
     }
