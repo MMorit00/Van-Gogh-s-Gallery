@@ -5,8 +5,9 @@ struct Artwork: Identifiable, Hashable {
     let title: String
     let imageName: String
     let description: String
-    let year: String
+  let number: String // 序号
     let colors: [Color]
+
     
     static func == (lhs: Artwork, rhs: Artwork) -> Bool {
         lhs.id == rhs.id
@@ -21,9 +22,9 @@ struct Artwork: Identifiable, Hashable {
 extension Artwork {
     static let thePotatoEaters = Artwork(
         title: "The Potato Eaters",
-        imageName: "potato_eaters",
+        imageName: "The_potato_eaters",
         description: "One of Van Gogh's early masterpieces...",
-        year: "1885",
+        number: "01",
         colors: [
             Color(red: 0.09, green: 0.10, blue: 0.09),
             Color(red: 0.10, green: 0.13, blue: 0.08)
@@ -32,9 +33,9 @@ extension Artwork {
     
     static let starryNight = Artwork(
         title: "The Starry Night",
-        imageName: "starry_night",
+        imageName: "Starry_night",
         description: "Perhaps Van Gogh's most famous work...",
-        year: "1889",
+        number: "02",
         colors: [
             Color(red: 0.08, green: 0.40, blue: 0.73),
             Color(red: 0.97, green: 0.77, blue: 0.37)
@@ -42,17 +43,17 @@ extension Artwork {
     )
     static let sunflowers = Artwork(
         title: "Sunflowers",
-        imageName: "sunflowers",
+        imageName: "Sun_flowers",
         description: "A series of paintings featuring sunflowers...",
-        year: "1888",
+        number: "03",
         colors: [Color(red: 0.97, green: 0.77, blue: 0.37)]
     )
 
     static let wheatfieldWithCrow = Artwork(
         title: "Wheatfield with Crow",
-        imageName: "wheatfield_with_crow",
+        imageName: "Wheatfield_with_crows",
         description: "A painting depicting a wheatfield with a crow...",
-        year: "1889",
+        number: "04",
         colors: [Color(red: 0.97, green: 0.77, blue: 0.37)]
     )
     // ... 其他艺术作品

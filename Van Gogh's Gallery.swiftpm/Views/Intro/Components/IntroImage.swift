@@ -10,6 +10,8 @@ struct IntroImage: View {
     
     var body: some View {
         Image(imageName)
+        .resizable()
+            .aspectRatio(contentMode: .fill)
             .frame(width: width, height: height)
             .cornerRadius(2)
 //            .shadow(color: .black.opacity(0.25), radius: 5, y: 2)

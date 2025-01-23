@@ -1,4 +1,3 @@
-
 import SwiftUI 
 
 class AppState: ObservableObject {
@@ -12,12 +11,17 @@ class AppState: ObservableObject {
     @Published var currentProgress: GameProgress?
     
     // MARK: - Game Data
-    let artworks: [Artwork] = [
-        .thePotatoEaters,
-        .starryNight,
-        .sunflowers,
-        .wheatfieldWithCrow
-    ]
+    @Published var artworks: [Artwork]
+    
+    init() {
+        self.artworks = [
+            .thePotatoEaters,
+            .starryNight,
+            .sunflowers,
+            .wheatfieldWithCrow
+        ]
+        self.selectedArtwork = self.artworks[0]
+    }
     
     // MARK: - Progress Tracking
     struct GameProgress {

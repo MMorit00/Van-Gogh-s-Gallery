@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct IntroView1: View {
+  @EnvironmentObject var appState: AppState
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -12,6 +13,7 @@ struct IntroView1: View {
                     IntroLowerSection(geometry: geometry)
                         .frame(height: 488)
                         .zIndex(7)
+                        .environmentObject(appState)
                 }
                 .ignoresSafeArea()
 
@@ -26,7 +28,7 @@ struct IntroView1: View {
                 .ignoresSafeArea()
 
                 ZStack(alignment: .leading) {
-                    IntroImage(imageName: "starry_night",
+                    IntroImage(imageName: "StarryNight",
                                width: 512, height: 357.50)
                 }
 
@@ -80,7 +82,7 @@ private struct IntroUpperSection: View {
 // 下半部分子视图
 private struct IntroLowerSection: View {
     let geometry: GeometryProxy
-
+@EnvironmentObject var appState: AppState
     var body: some View {
         ZStack {
             Color(red: 0.93, green: 0.95, blue: 0.98)
@@ -99,7 +101,7 @@ private struct IntroLowerSection: View {
 
                         // Next按钮
                         NextBT(color: Color(red: 0.08, green: 0.40, blue: 0.73)) {
-                            // 处理点击事件
+                          appState.navigate(to:.intro(step: .second))
                         }
                         .padding(.bottom, 40)
                     }
@@ -113,4 +115,5 @@ private struct IntroLowerSection: View {
 
 #Preview {
     IntroView1()
+        .environmentObject(AppState())
 }
