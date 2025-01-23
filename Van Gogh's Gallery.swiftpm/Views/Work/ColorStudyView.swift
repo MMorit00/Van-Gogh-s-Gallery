@@ -9,10 +9,25 @@ struct ColorStudyView: View {
     @State private var showingCongrPopup = false
     @State private var shouldShowPopup = false
 
+    // 添加入场动画状态
+    @State private var showTitle: Bool = false
+    @State private var showImage: Bool = false
+    @State private var showProgress: Bool = false
+
     // 添加常量样式
     private enum Style {
         static let backgroundColor = Color(red: 0.15, green: 0.20, blue: 0.15)
         static let textColor = Color(red: 0.90, green: 0.92, blue: 0.88)
+    }
+
+    private func getTextTransition(_ index: Int) -> AnyTransition {
+        .asymmetric(
+            insertion: .opacity
+                .combined(with: .move(edge: .top))
+                .combined(with: .scale(scale: 0.9))
+                .animation(.easeInOut(duration: 0.6).delay(Double(index) * 0.2)),
+            removal: .opacity.animation(.easeInOut(duration: 0.3))
+        )
     }
 
     var body: some View {
@@ -23,38 +38,48 @@ struct ColorStudyView: View {
 
             VStack(spacing: 0) {
                 // 1. 顶部文字
-                Text("**Click on** the colors in the painting, and you will gain an understanding of the meanings behind these colors.")
-                    .roundedH1_24()
-                    .foregroundColor(appState.currentColorScheme.textColor)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 50)
-                    .padding(.bottom, 16)
+                if showTitle {
+                    Text("**Click on** the colors in the painting, and you will gain an understanding of the meanings behind these colors.")
+                        .roundedH1_24()
+                        .foregroundColor(appState.currentColorScheme.textColor)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 50)
+                        .padding(.bottom, 16)
+                        .transition(getTextTransition(0))
+                }
 
                 // 2. 中间图片
-                ImageViewWithColorDetection(
-                    imageName: artwork.imageName,
-                    onColorDetected: { color in
-                        handleColorDetection(color)
-                    }
-                )
-                .frame(width: 738, height: 576)
-                .padding(.bottom, 72)
+                if showImage {
+                    ImageViewWithColorDetection(
+                        imageName: artwork.imageName,
+                        onColorDetected: { color in
+                            handleColorDetection(color)
+                        }
+                    )
+                    .frame(width: 738, height: 576)
+                    .padding(.bottom, 72)
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                }
 
                 // 3. 底部进度条
-                if let progress = appState.currentProgress {
-                    ProgressBar(
-                        progress: progress.colorStudyPercentage,
-                        width: UIScreen.main.bounds.width - 80,
-                        height: 15.5
-                    )
-                    .padding(.horizontal, 40)
-                    .padding(.bottom, 40)
-                } else {
-                    Text("Progress not initialized")
-                        .foregroundColor(.red)
+                if showProgress {
+                    if let progress = appState.currentProgress {
+                        ProgressBar(
+                            progress: progress.colorStudyPercentage,
+                            width: UIScreen.main.bounds.width - 80,
+                            height: 15.5
+                        )
+                        .padding(.horizontal, 40)
+                        .padding(.bottom, 40)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    } else {
+                        Text("Progress not initialized")
+                            .foregroundColor(.red)
+                    }
                 }
             }
             .blur(radius: showingCongrPopup ? 10 : 0)
+            .animation(.easeInOut(duration: 0.3), value: showingCongrPopup)
 
             // 完成弹窗
             if showingCongrPopup {
@@ -94,8 +119,20 @@ struct ColorStudyView: View {
         .onAppear {
             // 确保进度被初始化
             appState.initializeProgress(for: artwork)
+
+            // 触发入场动画序列
+            withAnimation(.easeOut(duration: 0.6)) {
+                showTitle = true
+            }
+
+            withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
+                showImage = true
+            }
+
+            withAnimation(.easeOut(duration: 0.6).delay(0.6)) {
+                showProgress = true
+            }
         }
-        .animation(.easeInOut(duration: 0.3), value: showingCongrPopup)
     }
 
     private func handleColorDetection(_ detectedColor: UIColor) {

@@ -8,6 +8,9 @@ struct ColorChallengeView: View {
     @State private var matchingMessage = ""
     @State private var showMessage = false
     @State private var showCongrPopup = false
+    @State private var showTitle: Bool = false
+    @State private var showColorBlocks: Bool = false
+    @State private var showProgress: Bool = false
 
     private var currentPaletteInfo: PaletteInfo {
         artwork.paletteInfo[currentPaletteIndex]
@@ -17,82 +20,98 @@ struct ColorChallengeView: View {
         Double(currentPaletteIndex) / Double(artwork.paletteInfo.count)
     }
 
+    private func getTextTransition(_ index: Int) -> AnyTransition {
+        .asymmetric(
+            insertion: .opacity
+                .combined(with: .move(edge: .top))
+                .combined(with: .scale(scale: 0.9))
+                .animation(.easeInOut(duration: 0.6).delay(Double(index) * 0.2)),
+            removal: .opacity.animation(.easeInOut(duration: 0.3))
+        )
+    }
+
     var body: some View {
         GeometryReader { _ in
             ZStack {
                 VStack(spacing: 0) {
-                    Text("Color Challenge")
-                        .serifH0_36()
-                        .padding(.top, 48)
-
-                    // Color blocks container
-                    ZStack(alignment: .center) {
-                        VStack(spacing: 0) {
-                            // Target color block
-                            Rectangle()
-                                .fill(currentPaletteInfo.color)
-                                .frame(maxWidth: .infinity)
-                                .overlay(
-                                    Text("Try to match the color you choose with the target color")
-                                        .serifH2_16_italic()
-                                        .foregroundColor(appState.currentColorScheme.upperBackground)
-                                        .padding()
-                                )
-                                .cornerRadius(12, corners: [.topLeft, .topRight])
-
-                            // Your color block
-                            Rectangle()
-                                .fill(selectedColor)
-                                .frame(maxWidth: .infinity)
-                                .overlay(
-                                    Text("Your Color")
-                                        .serifH2_16_italic()
-                                        .foregroundColor(appState.currentColorScheme.upperBackground)
-                                        .padding()
-                                )
-                                .cornerRadius(12, corners: [.bottomLeft, .bottomRight])
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .padding(.horizontal, 240)
-                        .padding(.vertical, 50)
-
-                        // Color Picker overlay
-                        ColorPicker("", selection: $selectedColor)
-                            .labelsHidden()
-                            .scaleEffect(1.5)
-                            .onChange(of: selectedColor) { _ in
-                                checkColorMatch()
-                            }
-                            .background(
-                                Circle()
-                                    .fill(Color.white.opacity(0.1))
-                                    .frame(width: 44, height: 44)
-                            )
+                    if showTitle {
+                        Text("Color Challenge")
+                            .serifH0_36()
+                            .padding(.top, 48)
+                            .transition(getTextTransition(0))
                     }
-                    .shadow(color: .black.opacity(0.25), radius: 5, y: 2)
+
+                    if showColorBlocks {
+                        ZStack(alignment: .center) {
+                            VStack(spacing: 0) {
+                                Rectangle()
+                                    .fill(currentPaletteInfo.color)
+                                    .frame(maxWidth: .infinity)
+                                    .overlay(
+                                        Text("Try to match the color you choose with the target color")
+                                            .serifH2_16_italic()
+                                            .foregroundColor(appState.currentColorScheme.upperBackground)
+                                            .padding()
+                                    )
+                                    .cornerRadius(12, corners: [.topLeft, .topRight])
+
+                                Rectangle()
+                                    .fill(selectedColor)
+                                    .frame(maxWidth: .infinity)
+                                    .overlay(
+                                        Text("Your Color")
+                                            .serifH2_16_italic()
+                                            .foregroundColor(appState.currentColorScheme.upperBackground)
+                                            .padding()
+                                    )
+                                    .cornerRadius(12, corners: [.bottomLeft, .bottomRight])
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(.horizontal, 240)
+                            .padding(.vertical, 50)
+                            .animation(.easeInOut(duration: 0.3), value: selectedColor)
+
+                            ColorPicker("", selection: $selectedColor)
+                                .labelsHidden()
+                                .scaleEffect(1.5)
+                                .onChange(of: selectedColor) { _ in
+                                    checkColorMatch()
+                                }
+                                .background(
+                                    Circle()
+                                        .fill(Color.white.opacity(0.1))
+                                        .frame(width: 44, height: 44)
+                                )
+                        }
+                        .shadow(color: .black.opacity(0.25), radius: 5, y: 2)
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                    }
 
                     if showMessage {
                         Text(matchingMessage)
                             .roundedH2_16()
                             .foregroundColor(matchingMessage.contains("successful") ? .green : .orange)
                             .padding()
+                            .transition(.opacity.combined(with: .scale(scale: 0.95)))
                     }
 
                     Spacer()
 
-                    // Progress bar section
-                    VStack(spacing: 16) {
-                        ProgressBar(
-                            progress: progress,
-                            width: UIScreen.main.bounds.width - 80,
-                            height: 15.5
-                        )
+                    if showProgress {
+                        VStack(spacing: 16) {
+                            ProgressBar(
+                                progress: progress,
+                                width: UIScreen.main.bounds.width - 80,
+                                height: 15.5
+                            )
 
-                        Text("If the color challenge is successful(progress bar is 100%), it will automatically return to the gallery.")
-                            .roundedH2_16()
-                            .multilineTextAlignment(.center)
+                            Text("If the color challenge is successful(progress bar is 100%), it will automatically return to the gallery.")
+                                .roundedH2_16()
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding(.bottom, 40)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
                     }
-                    .padding(.bottom, 40)
                 }
                 .ignoresSafeArea()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -118,6 +137,19 @@ struct ColorChallengeView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showCongrPopup)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.6)) {
+                showTitle = true
+            }
+
+            withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
+                showColorBlocks = true
+            }
+
+            withAnimation(.easeOut(duration: 0.6).delay(0.6)) {
+                showProgress = true
+            }
+        }
     }
 
     private func checkColorMatch() {

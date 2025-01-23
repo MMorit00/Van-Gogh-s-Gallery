@@ -19,6 +19,11 @@ class AppState: ObservableObject {
     @Published var currentColorScheme: ArtworkColorScheme = .default
     private let colorManager = ArtworkColorManager()
 
+  
+
+
+
+
     init() {
         // 直接使用全局变量初始化
         artworks = [
@@ -217,4 +222,6 @@ class AppState: ObservableObject {
             }
         }
     }
+
+  
 }

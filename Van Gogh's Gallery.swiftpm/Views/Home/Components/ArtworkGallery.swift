@@ -7,6 +7,7 @@ struct ArtworkGallery: View {
     @State private var currentIndex: Int = 0
     @State private var offset: CGFloat = 0
     @State private var dragOffset: CGFloat = 0
+    @State private var isDragging: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -24,8 +25,8 @@ struct ArtworkGallery: View {
                                     cardWidth: cardWidth,
                                     spacing: spacing
                                 ))
+                                .scaleEffect(calculateScale(for: index))
                                 .onTapGesture {
-                                  
                                     appState.navigate(to: .workIntro(artwork: artwork))
                                 }
                         }
@@ -34,29 +35,40 @@ struct ArtworkGallery: View {
                 }
                 .content
                 .offset(x: offset + dragOffset)
-                
+                .animation(isDragging ?
+                    .spring(response: 0.7, dampingFraction: 0.9) :
+                    .spring(response: 0.8, dampingFraction: 0.95, blendDuration: 0.8),
+                    value: dragOffset)
                 .gesture(
                     DragGesture()
                         .onChanged { value in
-                            dragOffset = value.translation.width
+                            isDragging = true
+                            dragOffset = value.translation.width * 0.8
                         }
-                        .onEnded { _ in
+                        .onEnded { value in
+                            isDragging = false
                             let totalOffset = offset + dragOffset
-                            let newIndex = -Int(round(totalOffset / cardSize))
-                            let clampedIndex = max(0, min(newIndex, artworks.count - 1))
+                            let velocity = value.predictedEndLocation.x - value.location.x
 
+                            var newIndex = -Int(round(totalOffset / cardSize))
+                            if abs(velocity) > 200 {
+                                newIndex += velocity > 0 ? -1 : 1
+                            }
+
+                            let clampedIndex = max(0, min(newIndex, artworks.count - 1))
                             currentIndex = clampedIndex
 
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                            withAnimation(.spring(
+                                response: 0.8,
+                                dampingFraction: 0.95,
+                                blendDuration: 0.8
+                            )) {
                                 offset = -CGFloat(currentIndex) * cardSize
                                 dragOffset = 0
                                 selectedArtwork = artworks[currentIndex]
                             }
                         }
                 )
-              
-            
-
             }
 //            .overlay(content: {
 //              Text(selectedArtwork.title)
@@ -67,8 +79,6 @@ struct ArtworkGallery: View {
             .onAppear {
                 offset = -CGFloat(currentIndex) * cardSize
             }
-          
-        
         }
     }
 
@@ -80,6 +90,15 @@ struct ArtworkGallery: View {
 
         let offsetMultiplier = min(distance, 1.0)
         return maxOffset * offsetMultiplier
+    }
+
+  private func calculateScale(for index: Int) -> CGFloat {
+        let cardSize: CGFloat = 624 + 40  // 添加CGFloat类型
+        let currentPosition = -(offset + dragOffset) / cardSize
+        let distance = abs(CGFloat(index) - currentPosition)  // 将index转换为CGFloat
+        let minScale: CGFloat = 0.95
+        
+        return 1.0 - (distance * (1.0 - minScale))
     }
 }
 
