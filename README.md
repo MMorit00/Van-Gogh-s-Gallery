@@ -2,6 +2,15 @@
 # Van Gogh's Gallery - 阅读说明
 
 ## 概述
+<div style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/user-attachments/assets/55b154b8-27f8-4e5f-b7e3-2d41f0c62895" width="47%" />
+    <img src="https://github.com/user-attachments/assets/5ed4f7e8-f7f2-4030-be69-3e2669a3c26a" width="47%" />
+</div>
+<div style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/user-attachments/assets/ba2e426d-cc36-4098-9fd3-3e5de502b60a" width="47%" />
+    <img src="https://github.com/user-attachments/assets/22d81649-c34a-48ee-b59b-9575df5564e8" width="47%" />
+</div>
+
 
 Van Gogh's Gallery 是一款互动式iOS应用，旨在让用户探索文森特·梵高（Vincent van Gogh）的代表性画作。这款应用允许用户深入了解梵高的作品，特别是他的色彩运用和创作技法。通过结合教育内容、色彩学习挑战和互动体验，用户可以更好地理解艺术家如何在他的杰作中运用色彩。
 
